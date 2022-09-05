@@ -1,0 +1,261 @@
+[
+    {
+        "id": "b917cacddbdb7c37",
+        "type": "comment",
+        "z": "e3ba4537a9672132",
+        "name": "Sample Website Design Using Node-Red",
+        "info": "",
+        "x": 400,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "cf0d5778cd90b5a7",
+        "type": "http in",
+        "z": "e3ba4537a9672132",
+        "name": "Get My Info",
+        "url": "/myinfo",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 90,
+        "y": 140,
+        "wires": [
+            [
+                "be728398f09a55a4"
+            ]
+        ]
+    },
+    {
+        "id": "be728398f09a55a4",
+        "type": "function",
+        "z": "e3ba4537a9672132",
+        "name": "set Post Url ",
+        "func": "msg.url = \"getmypost\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 170,
+        "y": 220,
+        "wires": [
+            [
+                "d9419cbd130bc267"
+            ]
+        ]
+    },
+    {
+        "id": "d9419cbd130bc267",
+        "type": "template",
+        "z": "e3ba4537a9672132",
+        "name": "Javascript Code",
+        "field": "payload.script",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "$(document).ready(function(e) {\n    \n    $(\"form[ajax=true]\").submit(function(e) {\n        \n        e.preventDefault();\n        \n        var form_data = $(this).serialize();\n        var form_url = $(this).attr(\"action\");\n        var form_method = $(this).attr(\"method\").toUpperCase();\n        \n        $(\"#loadingimg\").show();\n        \n        $.ajax({\n            url: form_url, \n            type: form_method,      \n            data: form_data,     \n            cache: false,\n            success: function(returnhtml){                          \n                $(\"#result\").html(returnhtml); \n                $(\"#loadingimg\").hide();                    \n            }           \n        });    \n        \n    });\n    \n});",
+        "output": "str",
+        "x": 260,
+        "y": 280,
+        "wires": [
+            [
+                "e6db7a407537ed80"
+            ]
+        ]
+    },
+    {
+        "id": "e6db7a407537ed80",
+        "type": "template",
+        "z": "e3ba4537a9672132",
+        "name": "Css Code ",
+        "field": "payload.style",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "input[type=text], select {\n    width: 100%;\n    padding: 12px 20px;\n    margin: 8px 0;\n    display: inline-block;\n    border: 1px solid #ccc;\n    border-radius: 4px;\n    box-sizing: border-box;\n}\n\ninput[type=submit] {\n    width: 100%;\n    background-color: #4CAF50;\n    color: white;\n    padding: 14px 20px;\n    margin: 8px 0;\n    border: none;\n    border-radius: 4px;\n    cursor: pointer;\n}\n\ninput[type=submit]:hover {\n    background-color: #45a049;\n}\n\ndiv {\n    border-radius: 5px;\n    background-color: #f2f2f2;\n    padding: 20px;\n}\n",
+        "output": "str",
+        "x": 440,
+        "y": 280,
+        "wires": [
+            [
+                "9d1bdcb886cdc742"
+            ]
+        ]
+    },
+    {
+        "id": "9d1bdcb886cdc742",
+        "type": "template",
+        "z": "e3ba4537a9672132",
+        "name": "HTML",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<html>\n  <head>\n    <title>My Site</title>\n    <meta name=\"viewport\" content=\"initial-scale=1.0, user-scalable=no\">\n    <meta charset=\"utf-8\">\n    <script src=\"http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js\"></script>\n    <style>{{{payload.style}}}</style>\n  </head>\n  \n \n\n<div>\n  <form method=\"post\" action=\"/{{url}}\" ajax=\"true\">\n    <label for=\"fname\">First Name</label>\n    <input type=\"text\" id=\"fname\" name=\"firstname\">\n\n    <label for=\"lname\">Last Name</label>\n    <input type=\"text\" id=\"lname\" name=\"lastname\">\n\n    <label for=\"country\">Country</label>\n    <select id=\"country\" name=\"country\">\n      <option value=\"India\">India</option>\n      <option value=\"canada\">Canada</option>\n      <option value=\"usa\">USA</option>\n    </select>\n  \n    <input type=\"submit\" value=\"Submit\">\n  </form>\n</div>\n<div>\n    <span id=\"result\"></span>\n</div>\n\n</body>\n</html>\n<script>{{{payload.script}}}</script>",
+        "output": "str",
+        "x": 590,
+        "y": 280,
+        "wires": [
+            [
+                "5aeb6ff6ecbb62b9"
+            ]
+        ]
+    },
+    {
+        "id": "5aeb6ff6ecbb62b9",
+        "type": "http response",
+        "z": "e3ba4537a9672132",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 750,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "b90e9c61e90ff104",
+        "type": "http in",
+        "z": "e3ba4537a9672132",
+        "name": "",
+        "url": "/getmypost",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 360,
+        "wires": [
+            [
+                "c39539e8af204b5e",
+                "622c7ab7bf829c7e"
+            ]
+        ]
+    },
+    {
+        "id": "8fc3e4ea7e822c67",
+        "type": "function",
+        "z": "e3ba4537a9672132",
+        "name": "",
+        "func": "msg.payload = 'The following data was submitted and available in the msg.payload: '+msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 360,
+        "wires": [
+            [
+                "bdf58bb60dae4fb8"
+            ]
+        ]
+    },
+    {
+        "id": "c39539e8af204b5e",
+        "type": "json",
+        "z": "e3ba4537a9672132",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 330,
+        "y": 360,
+        "wires": [
+            [
+                "8fc3e4ea7e822c67"
+            ]
+        ]
+    },
+    {
+        "id": "bdf58bb60dae4fb8",
+        "type": "http response",
+        "z": "e3ba4537a9672132",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 650,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "e9d4993f227b2371",
+        "type": "comment",
+        "z": "e3ba4537a9672132",
+        "name": "HTML Form Submit Data",
+        "info": "",
+        "x": 490,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "94e085d8f0958888",
+        "type": "comment",
+        "z": "e3ba4537a9672132",
+        "name": "Part 1",
+        "info": "",
+        "x": 430,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "9f54fd3959993c86",
+        "type": "comment",
+        "z": "e3ba4537a9672132",
+        "name": "Part 2 ",
+        "info": "",
+        "x": 390,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "24e682988d01f126",
+        "type": "comment",
+        "z": "e3ba4537a9672132",
+        "name": "Storing to mongodb data",
+        "info": "",
+        "x": 570,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "622c7ab7bf829c7e",
+        "type": "json",
+        "z": "e3ba4537a9672132",
+        "name": "",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 330,
+        "y": 480,
+        "wires": [
+            [
+                "5f4cd54a36f90882"
+            ]
+        ]
+    },
+    {
+        "id": "5f4cd54a36f90882",
+        "type": "mongodb out",
+        "z": "e3ba4537a9672132",
+        "mongodb": "7486e96179aaedee",
+        "name": "",
+        "collection": "nodered",
+        "payonly": true,
+        "upsert": false,
+        "multi": false,
+        "operation": "insert",
+        "x": 580,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "7486e96179aaedee",
+        "type": "mongodb",
+        "hostname": "127.0.0.1",
+        "topology": "direct",
+        "connectOptions": "",
+        "port": "27017",
+        "db": "Demo",
+        "name": ""
+    }
+]
