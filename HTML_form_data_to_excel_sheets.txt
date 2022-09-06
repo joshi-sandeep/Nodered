@@ -1,0 +1,160 @@
+[
+    {
+        "id": "d49eab0a76c602c9",
+        "type": "comment",
+        "z": "b7b711447594e529",
+        "name": "Storing html Form Data to Excel Sheet",
+        "info": "",
+        "x": 470,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "8b890c029d057a01",
+        "type": "http in",
+        "z": "b7b711447594e529",
+        "name": "",
+        "url": "/add_data",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 140,
+        "wires": [
+            [
+                "3f5ddce796697697"
+            ]
+        ]
+    },
+    {
+        "id": "3f5ddce796697697",
+        "type": "function",
+        "z": "b7b711447594e529",
+        "name": "",
+        "func": "msg.url = \"excelpost\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 200,
+        "wires": [
+            [
+                "768d1e915cf74583"
+            ]
+        ]
+    },
+    {
+        "id": "768d1e915cf74583",
+        "type": "template",
+        "z": "b7b711447594e529",
+        "name": "javascript code",
+        "field": "payload.script",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "$(document).ready(function(e) {\n    \n    $(\"form[ajax=true]\").submit(function(e) {\n        \n        e.preventDefault();\n        \n        var form_data = $(this).serialize();\n        var form_url = $(this).attr(\"action\");\n        var form_method = $(this).attr(\"method\").toUpperCase();\n        \n        $(\"#loadingimg\").show();\n        \n        $.ajax({\n            url: form_url, \n            type: form_method,      \n            data: form_data,     \n            cache: false,\n            success: function(returnhtml){                          \n                $(\"#result\").html(returnhtml); \n                $(\"#loadingimg\").hide();                    \n            }           \n        });    \n        \n    });\n    \n});",
+        "output": "str",
+        "x": 380,
+        "y": 260,
+        "wires": [
+            [
+                "080b570f056cd870"
+            ]
+        ]
+    },
+    {
+        "id": "080b570f056cd870",
+        "type": "template",
+        "z": "b7b711447594e529",
+        "name": "Html Code",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<html>\n  <head>\n    <title>My website</title>\n    <script src=\"http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js\"></script>\n  </head>\n  <body>\n \n\n<div>\n  <form method=\"post\" action=\"/{{url}}\" ajax=\"true\">\n    <label for=\"fname\">First Name</label>\n    <input type=\"text\" id=\"fname\" name=\"firstname\">\n<br><br>\n    <label for=\"lname\">Last Name</label>\n    <input type=\"text\" id=\"lname\" name=\"lastname\">\n<br><br>\n     \n    <input type=\"submit\" value=\"Submit\">\n  </form>\n</div>\n<div>\n    <span id=\"result\"></span>\n</div>\n\n</body>\n</html>\n<script>{{{payload.script}}}</script>",
+        "output": "str",
+        "x": 570,
+        "y": 260,
+        "wires": [
+            [
+                "3303fbf23403c4a4"
+            ]
+        ]
+    },
+    {
+        "id": "3303fbf23403c4a4",
+        "type": "http response",
+        "z": "b7b711447594e529",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 650,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "5c28a57bfaaa671c",
+        "type": "http in",
+        "z": "b7b711447594e529",
+        "name": "",
+        "url": "/excelpost",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 320,
+        "wires": [
+            [
+                "c02d5634b4e5a436"
+            ]
+        ]
+    },
+    {
+        "id": "c02d5634b4e5a436",
+        "type": "json",
+        "z": "b7b711447594e529",
+        "name": "",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 350,
+        "y": 380,
+        "wires": [
+            [
+                "29eb1349a957df01",
+                "eafca3c678a31fc5"
+            ]
+        ]
+    },
+    {
+        "id": "29eb1349a957df01",
+        "type": "alafile out",
+        "z": "b7b711447594e529",
+        "name": "My Excel file",
+        "filename": "D:\\github nodered\\mydata",
+        "format": "xlsx",
+        "columns": "*",
+        "headers": true,
+        "x": 550,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "eafca3c678a31fc5",
+        "type": "debug",
+        "z": "b7b711447594e529",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 470,
+        "y": 320,
+        "wires": []
+    }
+]
