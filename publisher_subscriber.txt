@@ -1,0 +1,151 @@
+[
+    {
+        "id": "d07b7040.c20b8",
+        "type": "comment",
+        "z": "94a9a543b6d7ae65",
+        "name": " Demo of String Input converting it into an html string.",
+        "info": "",
+        "x": 410,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "bb71e692.483d38",
+        "type": "http in",
+        "z": "94a9a543b6d7ae65",
+        "name": "input string",
+        "url": "/string",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 160,
+        "wires": [
+            [
+                "cc784aa.1884fb8"
+            ]
+        ]
+    },
+    {
+        "id": "cc784aa.1884fb8",
+        "type": "function",
+        "z": "94a9a543b6d7ae65",
+        "name": "",
+        "func": "msg.string ='__WELCOME TO NODE RED TUTORIALS:)__\\n'+\n'- __[NodeRed Channel](https://www.youtube.com/user/TheSandy145)__ - Node Red Youtube Channel\\n\\n'+ \n'- __[NodeRed-GitHub](https://github.com/joshi-sandeep/Nodered)__ - Biggner developers friendly\\n'+\n  'Like Share And Subscribe The Channel.'\n \n \nmsg.payload = msg.string\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 280,
+        "wires": [
+            [
+                "104aad734400e629"
+            ]
+        ]
+    },
+    {
+        "id": "104aad734400e629",
+        "type": "publish",
+        "z": "94a9a543b6d7ae65",
+        "name": "publish",
+        "hub": "8a5c1236a989c109",
+        "topics": [
+            {
+                "value": "data",
+                "type": "text"
+            },
+            {
+                "value": "topic",
+                "type": "msg"
+            }
+        ],
+        "x": 420,
+        "y": 180,
+        "wires": [
+            [
+                "45b2a2d693201705"
+            ]
+        ]
+    },
+    {
+        "id": "45b2a2d693201705",
+        "type": "debug",
+        "z": "94a9a543b6d7ae65",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "8a5c1236a989c109",
+        "type": "pubsubhub",
+        "name": "htmlcode"
+    }
+]
+
+
+
+
+
+
+[
+    {
+        "id": "8d8120eb491b88f7",
+        "type": "http response",
+        "z": "cb64c1bb323b13e7",
+        "name": "output",
+        "statusCode": "",
+        "headers": {},
+        "x": 490,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "e8955a1688c5e13f",
+        "type": "markdown",
+        "z": "cb64c1bb323b13e7",
+        "name": "convert  string to html",
+        "x": 340,
+        "y": 180,
+        "wires": [
+            [
+                "8d8120eb491b88f7"
+            ]
+        ]
+    },
+    {
+        "id": "d2ccd7454995683c",
+        "type": "subscribe",
+        "z": "cb64c1bb323b13e7",
+        "name": "subscribe",
+        "hub": "8a5c1236a989c109",
+        "pool": "apool",
+        "clone": true,
+        "topics": [
+            {
+                "value": "data"
+            }
+        ],
+        "x": 100,
+        "y": 200,
+        "wires": [
+            [
+                "e8955a1688c5e13f"
+            ]
+        ]
+    },
+    {
+        "id": "8a5c1236a989c109",
+        "type": "pubsubhub",
+        "name": "htmlcode"
+    }
+]

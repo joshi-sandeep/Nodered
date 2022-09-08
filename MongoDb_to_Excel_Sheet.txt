@@ -1,0 +1,87 @@
+[
+    {
+        "id": "a860cd94.2c94c",
+        "type": "inject",
+        "z": "7759d251.a660dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 270,
+        "y": 120,
+        "wires": [
+            [
+                "da076cdf9d3f330c"
+            ]
+        ]
+    },
+    {
+        "id": "43d54cc6.0a00c4",
+        "type": "debug",
+        "z": "7759d251.a660dc",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "41b072969df6849a",
+        "type": "alafile out",
+        "z": "7759d251.a660dc",
+        "name": "output",
+        "filename": "D:\\github nodered\\products",
+        "format": "xlsx",
+        "columns": "*",
+        "headers": true,
+        "x": 830,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "da076cdf9d3f330c",
+        "type": "mongodb in",
+        "z": "7759d251.a660dc",
+        "mongodb": "7486e96179aaedee",
+        "name": "",
+        "collection": "nodered",
+        "operation": "find",
+        "x": 440,
+        "y": 240,
+        "wires": [
+            [
+                "43d54cc6.0a00c4",
+                "41b072969df6849a"
+            ]
+        ]
+    },
+    {
+        "id": "7486e96179aaedee",
+        "type": "mongodb",
+        "hostname": "127.0.0.1",
+        "topology": "direct",
+        "connectOptions": "",
+        "port": "27017",
+        "db": "Demo",
+        "name": ""
+    }
+]
