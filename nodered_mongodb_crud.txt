@@ -1,0 +1,265 @@
+[
+    {
+        "id": "1aa86ea6.d665a1",
+        "type": "debug",
+        "z": "063a8285ec8e9d29",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 810,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "4207f55c.7ac6e4",
+        "type": "function",
+        "z": "063a8285ec8e9d29",
+        "name": "insert",
+        "func": "var newMsg = {};\nnewMsg.collection = 'PLC_DRIYPAC_1';\nnewMsg.payload = {\"status\":\"203\"}\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 230,
+        "y": 160,
+        "wires": [
+            [
+                "83ff43b1.59ece8"
+            ]
+        ]
+    },
+    {
+        "id": "28f711dc.7848be",
+        "type": "inject",
+        "z": "063a8285ec8e9d29",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 70,
+        "y": 80,
+        "wires": [
+            [
+                "4207f55c.7ac6e4"
+            ]
+        ]
+    },
+    {
+        "id": "83ff43b1.59ece8",
+        "type": "mongodb-node",
+        "z": "063a8285ec8e9d29",
+        "mongodb": "3c42b5710f83702a",
+        "name": "",
+        "collection": "nodered",
+        "operation": "insert",
+        "upsert": false,
+        "multi": false,
+        "x": 570,
+        "y": 160,
+        "wires": [
+            [
+                "1aa86ea6.d665a1"
+            ]
+        ]
+    },
+    {
+        "id": "74044eac.e0484",
+        "type": "debug",
+        "z": "063a8285ec8e9d29",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 870,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "c782a26e.9ddde8",
+        "type": "function",
+        "z": "063a8285ec8e9d29",
+        "name": "find",
+        "func": "var newMsg = {};\nnewMsg.collection = 'PLC_DRIYPAC_1';\nnewMsg.payload = {};\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 290,
+        "y": 400,
+        "wires": [
+            [
+                "6bccaad7.d79244"
+            ]
+        ]
+    },
+    {
+        "id": "eda26919.0cd938",
+        "type": "inject",
+        "z": "063a8285ec8e9d29",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 320,
+        "wires": [
+            [
+                "c782a26e.9ddde8"
+            ]
+        ]
+    },
+    {
+        "id": "6bccaad7.d79244",
+        "type": "mongodb-node",
+        "z": "063a8285ec8e9d29",
+        "mongodb": "15e56f9b.d519c8",
+        "name": "",
+        "collection": "nodered",
+        "operation": "find",
+        "upsert": false,
+        "multi": false,
+        "x": 630,
+        "y": 400,
+        "wires": [
+            [
+                "74044eac.e0484"
+            ]
+        ]
+    },
+    {
+        "id": "4c8a24c8.246d44",
+        "type": "debug",
+        "z": "063a8285ec8e9d29",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 870,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "df180e49.f0c2e",
+        "type": "function",
+        "z": "063a8285ec8e9d29",
+        "name": "update",
+        "func": "//const { ObjectId } = global.get('mongodb');\n\nvar newMsg = {};\nnewMsg.collection = 'PLC_DRIYPAC_1';\nnewMsg.query = {\"_id\": \"631a0c394264cb22a074f979\"};\nnewMsg.payload = {\"$set\": {\"status\": \"777\"}};\n\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 600,
+        "wires": [
+            [
+                "76a1ac70.b7f2c4"
+            ]
+        ]
+    },
+    {
+        "id": "7221dfd6.d3ef7",
+        "type": "inject",
+        "z": "063a8285ec8e9d29",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 540,
+        "wires": [
+            [
+                "df180e49.f0c2e"
+            ]
+        ]
+    },
+    {
+        "id": "76a1ac70.b7f2c4",
+        "type": "mongodb-node",
+        "z": "063a8285ec8e9d29",
+        "mongodb": "15e56f9b.d519c8",
+        "name": "",
+        "collection": "nodered",
+        "operation": "update",
+        "upsert": false,
+        "multi": false,
+        "x": 630,
+        "y": 620,
+        "wires": [
+            [
+                "4c8a24c8.246d44"
+            ]
+        ]
+    },
+    {
+        "id": "3c42b5710f83702a",
+        "type": "mongodb-config",
+        "hostname": "127.0.0.1",
+        "port": "27017",
+        "db": "Demo",
+        "name": ""
+    },
+    {
+        "id": "15e56f9b.d519c8",
+        "type": "mongodb-config",
+        "hostname": "127.0.0.1",
+        "port": "27017",
+        "db": "Demo",
+        "name": ""
+    }
+]
