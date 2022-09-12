@@ -1,0 +1,101 @@
+[
+    {
+        "id": "2e5cd7ae71bdb3ef",
+        "type": "inject",
+        "z": "a669e3615cdfc9a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 80,
+        "wires": [
+            [
+                "6d07c12e699c3d53"
+            ]
+        ]
+    },
+    {
+        "id": "6d07c12e699c3d53",
+        "type": "change",
+        "z": "a669e3615cdfc9a8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "left",
+                "pt": "msg",
+                "to": "[\"mango\",\"apple\",\"banana\",\"tomato\",\"onion\"]",
+                "tot": "json"
+            },
+            {
+                "t": "set",
+                "p": "right",
+                "pt": "msg",
+                "to": "[\"onion\", \"tomato\", \"chilly\", \"grapes\"]",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 180,
+        "y": 180,
+        "wires": [
+            [
+                "27b2a41a222dc872"
+            ]
+        ]
+    },
+    {
+        "id": "27b2a41a222dc872",
+        "type": "differences",
+        "z": "a669e3615cdfc9a8",
+        "name": "find diff",
+        "leftInput": "left",
+        "leftInputType": "msg",
+        "rightInput": "right",
+        "rightInputType": "msg",
+        "func": "⋃",
+        "outputType": "msg",
+        "output": "payload",
+        "x": 320,
+        "y": 240,
+        "wires": [
+            [
+                "b326c67e12274fd5"
+            ]
+        ]
+    },
+    {
+        "id": "b326c67e12274fd5",
+        "type": "debug",
+        "z": "a669e3615cdfc9a8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 510,
+        "y": 280,
+        "wires": []
+    }
+]
