@@ -1,0 +1,64 @@
+[
+    {
+        "id": "391668e115905017",
+        "type": "inject",
+        "z": "65cd6ca61325a207",
+        "name": "sample array",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "[ 10,15,11,17,14,21,16]",
+        "payloadType": "str",
+        "x": 290,
+        "y": 140,
+        "wires": [
+            [
+                "505cea42bf9c0f3f"
+            ]
+        ]
+    },
+    {
+        "id": "505cea42bf9c0f3f",
+        "type": "function",
+        "z": "65cd6ca61325a207",
+        "name": "ES6 Map Function",
+        "func": " var arr = msg.payload; \n\n var arr1 = arr.slice(1, -1)\n console.log(arr1);\n var arr2 = arr1.split(',');\n console.log(arr2);  \n \nfunction mapping(arr){\n  const arrd = arr.map(number => {\n    return number * 10;\n  });\n  return arrd;\n}\n\nmsg.payload = mapping(arr2);\n\nreturn msg",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 431,
+        "y": 200,
+        "wires": [
+            [
+                "17bc28758f09fea7"
+            ]
+        ]
+    },
+    {
+        "id": "17bc28758f09fea7",
+        "type": "debug",
+        "z": "65cd6ca61325a207",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 690,
+        "y": 140,
+        "wires": []
+    }
+]
