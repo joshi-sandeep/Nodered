@@ -1,0 +1,285 @@
+[
+    {
+        "id": "ea855084fbdb658c",
+        "type": "comment",
+        "z": "dab5fd78c1e15533",
+        "name": "Simple Example  Read Image PDF",
+        "info": "This is the simplest PDF test as seen in the pdfmake examples [here](http://pdfmake.org/playground.html)",
+        "x": 400,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "1e5c3c7176250fde",
+        "type": "inject",
+        "z": "dab5fd78c1e15533",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 200,
+        "y": 620,
+        "wires": [
+            [
+                "1c6ad19fde989212"
+            ]
+        ]
+    },
+    {
+        "id": "1c6ad19fde989212",
+        "type": "file in",
+        "z": "dab5fd78c1e15533",
+        "name": "",
+        "filename": "C:\\Users\\Admin\\Desktop\\pdf\\profile.jpg",
+        "filenameType": "str",
+        "format": "",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 270,
+        "y": 680,
+        "wires": [
+            [
+                "96ae90426e3004fc"
+            ]
+        ]
+    },
+    {
+        "id": "96ae90426e3004fc",
+        "type": "base64",
+        "z": "dab5fd78c1e15533",
+        "name": "",
+        "action": "str",
+        "property": "payload",
+        "x": 560,
+        "y": 640,
+        "wires": [
+            [
+                "6d2cd9d33e50fe98"
+            ]
+        ]
+    },
+    {
+        "id": "6d2cd9d33e50fe98",
+        "type": "template",
+        "z": "dab5fd78c1e15533",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{\n    \"pageSize\": \"A4\",\n    \"pageOrientation\": \"portrait\",\n    \"pageMargins\": [\n        40,\n        60,\n        40,\n        60\n    ],\n    \"info\": {\n        \"title\": \"my project\", \n    },\n    \"content\": [\n        \"Sample Image from file\",\n        {\n            \"image\": \"data:image/jpeg;base64,{{{payload}}}\",\n            \"width\": 200\n        }        \n\n    ]\n}",
+        "output": "str",
+        "x": 320,
+        "y": 760,
+        "wires": [
+            [
+                "7850a55982bf0af0"
+            ]
+        ]
+    },
+    {
+        "id": "7850a55982bf0af0",
+        "type": "pdfmake",
+        "z": "dab5fd78c1e15533",
+        "name": "",
+        "outputType": "Buffer",
+        "inputProperty": "payload",
+        "options": "{}",
+        "outputProperty": "payload",
+        "x": 500,
+        "y": 760,
+        "wires": [
+            [
+                "69a4ab6d611ff435"
+            ]
+        ]
+    },
+    {
+        "id": "69a4ab6d611ff435",
+        "type": "file",
+        "z": "dab5fd78c1e15533",
+        "name": "",
+        "filename": "C:\\Users\\Admin\\Desktop\\pdf\\myprofile.pdf",
+        "filenameType": "str",
+        "appendNewline": false,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 420,
+        "y": 840,
+        "wires": [
+            [
+                "a96b4517430e56e7"
+            ]
+        ]
+    },
+    {
+        "id": "a96b4517430e56e7",
+        "type": "debug",
+        "z": "dab5fd78c1e15533",
+        "name": "debug 20",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "71699bacf95f7d14",
+        "type": "inject",
+        "z": "dab5fd78c1e15533",
+        "name": "",
+        "props": [
+            {
+                "p": "payload",
+                "v": "",
+                "vt": "date"
+            },
+            {
+                "p": "topic",
+                "v": "",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 180,
+        "wires": [
+            [
+                "86e3150557064490"
+            ]
+        ]
+    },
+    {
+        "id": "86e3150557064490",
+        "type": "file in",
+        "z": "dab5fd78c1e15533",
+        "name": "",
+        "filename": "C:\\Users\\Admin\\Desktop\\pdf\\profile.jpg",
+        "filenameType": "str",
+        "format": "",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 250,
+        "y": 240,
+        "wires": [
+            [
+                "4f97910046b8efe4"
+            ]
+        ]
+    },
+    {
+        "id": "aca5277d46786161",
+        "type": "template",
+        "z": "dab5fd78c1e15533",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "json",
+        "syntax": "mustache",
+        "template": "{\n    \"pageSize\": \"A4\",\n    \"pageOrientation\": \"portrait\",\n    \"pageMargins\": [\n        40,\n        60,\n        40,\n        60\n    ],     \n    \"content\": [\n        \"My Proile image\",\n        {\n            \"image\": \"data:image/jpeg;base64,{{{payload}}}\",\n            \"width\": 200\n        }\n       \n\n    ]\n}",
+        "output": "json",
+        "x": 240,
+        "y": 320,
+        "wires": [
+            [
+                "34024bb904ff6770"
+            ]
+        ]
+    },
+    {
+        "id": "b075f07b530da07c",
+        "type": "file",
+        "z": "dab5fd78c1e15533",
+        "name": "",
+        "filename": "C:\\Users\\Admin\\Desktop\\pdf\\myprofile.pdf",
+        "filenameType": "str",
+        "appendNewline": false,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 420,
+        "y": 400,
+        "wires": [
+            [
+                "7631884b40205010"
+            ]
+        ]
+    },
+    {
+        "id": "34024bb904ff6770",
+        "type": "pdfmake",
+        "z": "dab5fd78c1e15533",
+        "name": "",
+        "outputType": "Buffer",
+        "inputProperty": "payload",
+        "options": "{}",
+        "outputProperty": "payload",
+        "x": 480,
+        "y": 320,
+        "wires": [
+            [
+                "b075f07b530da07c"
+            ]
+        ]
+    },
+    {
+        "id": "4f97910046b8efe4",
+        "type": "base64",
+        "z": "dab5fd78c1e15533",
+        "name": "",
+        "action": "str",
+        "property": "payload",
+        "x": 620,
+        "y": 240,
+        "wires": [
+            [
+                "aca5277d46786161"
+            ]
+        ]
+    },
+    {
+        "id": "7631884b40205010",
+        "type": "debug",
+        "z": "dab5fd78c1e15533",
+        "name": "debug 21",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 420,
+        "wires": []
+    }
+]
