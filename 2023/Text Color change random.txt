@@ -1,0 +1,88 @@
+[
+    {
+        "id": "d66f72537ef063c5",
+        "type": "ui_button",
+        "z": "611e5187ee64b715",
+        "name": "Change Color",
+        "group": "5ee7d6a4.37c8c4",
+        "order": 0,
+        "width": "0",
+        "height": "0",
+        "passthru": false,
+        "label": "Change Color",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "",
+        "topicType": "str",
+        "x": 180,
+        "y": 200,
+        "wires": [
+            [
+                "35386e1eaef97e61"
+            ]
+        ]
+    },
+    {
+        "id": "35386e1eaef97e61",
+        "type": "function",
+        "z": "611e5187ee64b715",
+        "name": "Change Text Color",
+        "func": "var colors = [\n    { name: 'Red', code: '#FF0000' },\n    { name: 'Green', code: '#00FF00' },\n    { name: 'Blue', code: '#0000FF' },\n    { name: 'Orange', code: '#FFA500' },\n    { name: 'Purple', code: '#800080' },\n    { name: 'Yellow', code: '#FFFF00' }\n];\n\nvar randomColor = colors[Math.floor(Math.random() * colors.length)];\n\nmsg.payload = randomColor.name;\nmsg.colorCode = randomColor.code;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 200,
+        "wires": [
+            [
+                "55f84795177f36a3"
+            ]
+        ]
+    },
+    {
+        "id": "55f84795177f36a3",
+        "type": "ui_template",
+        "z": "611e5187ee64b715",
+        "group": "5ee7d6a4.37c8c4",
+        "name": "Random Color Text",
+        "order": 1,
+        "width": "0",
+        "height": "0",
+        "format": "<style>\n    .text-color {\n        color: {{msg.colorCode}};\n    }\n</style>\n\n<span class=\"text-color\">{{msg.payload}}</span>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 630,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5ee7d6a4.37c8c4",
+        "type": "ui_group",
+        "name": "Cricket",
+        "tab": "b1d2e32b.101668",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "b1d2e32b.101668",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
