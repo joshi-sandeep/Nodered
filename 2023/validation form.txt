@@ -1,0 +1,51 @@
+[
+    {
+        "id": "b39afea71bb5290f",
+        "type": "http in",
+        "z": "e78730c82691305e",
+        "name": "Form Validation",
+        "url": "/validate",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 220,
+        "wires": [
+            [
+                "ed1bd881d6880652"
+            ]
+        ]
+    },
+    {
+        "id": "ed1bd881d6880652",
+        "type": "template",
+        "z": "e78730c82691305e",
+        "name": "Form Validation Response",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE html>\n<html>\n<head>\n    <title>Form Validation</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            margin: 0;\n            padding: 0;\n            background-color: #f1f1f1;\n        }\n\n        h1 {\n            text-align: center;\n            padding: 20px;\n        }\n\n        .form-group {\n            margin-bottom: 20px;\n            display: flex;\n            flex-direction: column;\n        }\n\n        label {\n            font-weight: bold;\n        }\n\n        input {\n            padding: 10px;\n            border: 1px solid #ccc;\n            border-radius: 5px;\n        }\n\n        .error-message {\n            color: red;\n            font-size: 14px;\n            margin-top: 5px;\n            display: none;\n            animation: fade-in 0.5s ease-in-out;\n        }\n\n        @keyframes fade-in {\n            0% {\n                opacity: 0;\n            }\n            100% {\n                opacity: 1;\n            }\n       }\n\n        button[type=\"submit\"] {\n            padding: 10px 20px;\n           background-color: #4CAF50;\n            color: white;\n            border: none;\n            border-radius: 5px;\n            cursor: pointer;\n            transition: background-color 0.3s ease-in-out;\n        }\n\n        button[type=\"submit\"]:hover {\n            background-color: #45a049;\n        }\n\n        .validation-error {\n            border-color: red !important;\n            animation: shake 0.5s ease-in-out;\n        }\n\n        @keyframes shake {\n            0% {\n                transform: translateX(0);\n            }\n            20% {\n                transform: translateX(-10px);\n            }\n            40% {\n                transform: translateX(10px);\n            }\n            60% {\n                transform: translateX(-10px);\n            }\n            80% {\n                transform: translateX(10px);\n            }\n            100% {\n                transform: translateX(0);\n            }\n        }\n        /* Styles for the table */\n        table {\n            margin-top: 20px;\n            border-collapse: collapse;\n            width: 100%;\n        }\n\n        th, td {\n            padding: 8px;\n            text-align: left;\n            border-bottom: 1px solid #ddd;\n        }\n\n        th {\n            background-color: #4CAF50;\n            color: white;\n        }\n    </style>\n    <script>\n        function validateForm() {\n            clearErrorMessages();\n\n            var nameInput = document.getElementById(\"name\");\n            var emailInput = document.getElementById(\"email\");\n            var phoneInput = document.getElementById(\"phone\");\n            var ageInput = document.getElementById(\"age\");\n\n            var name = nameInput.value.trim();\n            var email = emailInput.value.trim();\n            var phone = phoneInput.value.trim();\n            var age = ageInput.value.trim();\n\n            var isValid = true;\n\n            if (name === \"\") {\n                displayErrorMessage(\"name\", \"Please enter your name.\");\n                isValid = false;\n            }\n\n            if (email === \"\") {\n                displayErrorMessage(\"email\", \"Please enter your email.\");\n                isValid = false;\n            } else if (!validateEmail(email)) {\n                displayErrorMessage(\"email\", \"Please enter a valid email address.\");\n                isValid = false;\n            }\n\n            if (phone === \"\") {\n                displayErrorMessage(\"phone\", \"Please enter your phone number.\");\n                isValid = false;\n            } else if (!validatePhone(phone)) {\n                displayErrorMessage(\"phone\", \"Please enter a valid phone number.\");\n                isValid = false;\n            }\n\n            if (age === \"\") {\n                displayErrorMessage(\"age\", \"Please enter your age.\");\n                isValid = false;\n            } else if (!validateAge(age)) {\n                displayErrorMessage(\"age\", \"Please enter a valid age.\");\n                isValid = false;\n            }\n\n            return isValid;\n        }\n\n        function displayErrorMessage(inputName, errorMessage) {\n            var errorSpan = document.getElementById(inputName + \"-error\");\n            errorSpan.innerText = errorMessage;\n            errorSpan.style.display = \"block\";\n\n            var input = document.getElementById(inputName);\n            input.classList.add(\"validation-error\");\n        }\n\n        function clearErrorMessages() {\n            var errorMessages = document.getElementsByClassName(\"error-message\");\n            for (var i = 0; i < errorMessages.length; i++) {\n                errorMessages[i].style.display = \"none\";\n            }\n\n            var inputs = document.getElementsByTagName(\"input\");\n            for (var j = 0; j < inputs.length; j++) {\n                inputs[j].classList.remove(\"validation-error\");\n            }\n        }\n\n        function validateEmail(email) {\n            var regex = /^(([^<>()[\\]\\\\.,;:\\s@\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/;\n            return regex.test(email);\n        }\n\n        function validatePhone(phone) {\n            var regex = /^[+]?[(]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}$/;\n            return regex.test(phone);\n        }\n\n        function validateAge(age) {\n            return !isNaN(age) && age >= 18 && age <= 120;\n        }\n   </script>\n</head>\n<body>\n    <h1>Form Validation</h1>\n    <form id=\"validation-form\" action=\"/validate\" method=\"post\" onsubmit=\"return validateForm()\">\n        <div class=\"form-group\">\n            <label for=\"name\">Name:</label>\n            <input type=\"text\" id=\"name\" name=\"name\" required>\n            <span class=\"error-message\" id=\"name-error\"></span>\n        </div>\n        <div class=\"form-group\">\n            <label for=\"email\">Email:</label>\n            <input type=\"email\" id=\"email\" name=\"email\" required>\n            <span class=\"error-message\" id=\"email-error\"></span>\n        </div>\n        <div class=\"form-group\">\n            <label for=\"phone\">Phone:</label>\n            <input type=\"tel\" id=\"phone\" name=\"phone\" required>\n            <span class=\"error-message\" id=\"phone-error\"></span>\n        </div>\n        <div class=\"form-group\">\n            <label for=\"age\">Age:</label>\n            <input type=\"number\" id=\"age\" name=\"age\" required>\n            <span class=\"error-message\" id=\"age-error\"></span>\n        </div>\n        <button type=\"submit\">Submit</button>\n    </form>\n\n    {{#payload}}\n    <h2>Entered Data:</h2>\n    <table>\n        <tr>\n            <th>Name</th>\n            <th>Email</th>\n            <th>Phone</th>\n            <th>Age</th>\n        </tr>\n        <tr>\n            <td>{{name}}</td>\n            <td>{{email}}</td>\n            <td>{{phone}}</td>\n            <td>{{age}}</td>\n        </tr>\n    </table>\n    {{/payload}}\n</body>\n</html>",
+        "output": "str",
+        "x": 440,
+        "y": 220,
+        "wires": [
+            [
+                "06bd17b97cfd5155"
+            ]
+        ]
+    },
+    {
+        "id": "06bd17b97cfd5155",
+        "type": "http response",
+        "z": "e78730c82691305e",
+        "name": "Form Validation Response",
+        "statusCode": "",
+        "headers": {
+            "Content-Type": "text/html; charset=UTF-8"
+        },
+        "x": 740,
+        "y": 220,
+        "wires": []
+    }
+]

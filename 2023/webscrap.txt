@@ -1,0 +1,101 @@
+[
+    {
+        "id": "e1e2afcf06b1a9a9",
+        "type": "http request",
+        "z": "998eb762fd301b6d",
+        "name": "Fetch HTML",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "https://www.imdb.com/",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 230,
+        "y": 220,
+        "wires": [
+            [
+                "e6d6be062510da9b"
+            ]
+        ]
+    },
+    {
+        "id": "e6d6be062510da9b",
+        "type": "html",
+        "z": "998eb762fd301b6d",
+        "name": "Extract Data",
+        "property": "payload",
+        "outproperty": "payload",
+        "tag": "p",
+        "ret": "text",
+        "as": "single",
+        "x": 370,
+        "y": 320,
+        "wires": [
+            [
+                "86aa2549dade3ad0"
+            ]
+        ]
+    },
+    {
+        "id": "86aa2549dade3ad0",
+        "type": "template",
+        "z": "998eb762fd301b6d",
+        "name": "HTML Template",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<html>\n<head>\n    <title>Scraped Data</title>\n</head>\n<body>\n    <h1>{{payload}}</h1>\n    <br>\n</body>\n</html>",
+        "output": "str",
+        "x": 540,
+        "y": 220,
+        "wires": [
+            [
+                "05fc14fc6f591c46"
+            ]
+        ]
+    },
+    {
+        "id": "05fc14fc6f591c46",
+        "type": "http response",
+        "z": "998eb762fd301b6d",
+        "name": "HTTP Response",
+        "statusCode": "",
+        "headers": {},
+        "x": 640,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "4c6405220384d727",
+        "type": "http in",
+        "z": "998eb762fd301b6d",
+        "name": "",
+        "url": "/webscrap",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 120,
+        "wires": [
+            [
+                "e1e2afcf06b1a9a9"
+            ]
+        ]
+    },
+    {
+        "id": "360dcbe3c8ac7d4a",
+        "type": "comment",
+        "z": "998eb762fd301b6d",
+        "name": "webscrap",
+        "info": "",
+        "x": 380,
+        "y": 80,
+        "wires": []
+    }
+]

@@ -1,0 +1,83 @@
+[
+    {
+        "id": "e13c8f2c.6446a8",
+        "type": "http in",
+        "z": "e4222de5a46a843d",
+        "name": "/calculator",
+        "url": "/calculator",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 140,
+        "wires": [
+            [
+                "c3a25ed1.1a08d"
+            ]
+        ]
+    },
+    {
+        "id": "c3a25ed1.1a08d",
+        "type": "template",
+        "z": "e4222de5a46a843d",
+        "name": "HTML Template",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE html>\n<html>\n<head>\n    <title>Simple Calculator</title>\n    <style>\n        .button {\n            width: 100px;\n            height: 50px;\n            margin: 5px; \n            font-size: 25px;\n        }\n    </style>\n</head>\n<body>\n    <h1>Simple Calculator</h1>\n    <form action=\"/calculate\" method=\"post\">\n        <input type=\"text\" name=\"num1\" placeholder=\"Enter number 1\">\n        <input type=\"text\" name=\"num2\" placeholder=\"Enter number 2\">\n        <br><br>\n        <button class=\"button\" type=\"submit\" name=\"operation\" value=\"+\">+</button>\n        <button class=\"button\" type=\"submit\" name=\"operation\" value=\"-\">-</button>\n        <button class=\"button\" type=\"submit\" name=\"operation\" value=\"*\">*</button>\n        <button class=\"button\" type=\"submit\" name=\"operation\" value=\"/\">/</button>\n    </form>\n    <br>\n    <h2>Result: {{payload}}</h2>\n</body>\n</html>",
+        "x": 370,
+        "y": 140,
+        "wires": [
+            [
+                "fe43e9f1.2b8d38"
+            ]
+        ]
+    },
+    {
+        "id": "fe43e9f1.2b8d38",
+        "type": "http response",
+        "z": "e4222de5a46a843d",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 560,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "161ef165.c5e04b",
+        "type": "http in",
+        "z": "e4222de5a46a843d",
+        "name": "/calculate",
+        "url": "/calculate",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 220,
+        "wires": [
+            [
+                "c5a8116f.0aaff"
+            ]
+        ]
+    },
+    {
+        "id": "c5a8116f.0aaff",
+        "type": "function",
+        "z": "e4222de5a46a843d",
+        "name": "Calculate",
+        "func": "var num1 = parseFloat(msg.req.body.num1);\nvar num2 = parseFloat(msg.req.body.num2);\nvar operation = msg.req.body.operation;\n\nvar result;\n\nswitch(operation) {\n    case \"+\":\n        result = num1 + num2;\n        break;\n    case \"-\":\n        result = num1 - num2;\n        break;\n    case \"*\":\n        result = num1 * num2;\n        break;\n    case \"/\":\n        result = num1 / num2;\n        break;\n    default:\n        result = \"Invalid operation\";\n}\n\nmsg.payload = result;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 360,
+        "y": 220,
+        "wires": [
+            [
+                "c3a25ed1.1a08d"
+            ]
+        ]
+    }
+]

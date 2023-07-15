@@ -1,0 +1,104 @@
+[
+    {
+        "id": "1a9f31210844ab37",
+        "type": "http in",
+        "z": "729d43fe728a5926",
+        "name": "Input",
+        "url": "/analyze",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 120,
+        "wires": [
+            [
+                "0cf88eb15bd5f3bd"
+            ]
+        ]
+    },
+    {
+        "id": "2ec69aa5ef1d04de",
+        "type": "http in",
+        "z": "729d43fe728a5926",
+        "name": "Open HTML",
+        "url": "/data",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 220,
+        "wires": [
+            [
+                "fdee56e00de44e7b"
+            ]
+        ]
+    },
+    {
+        "id": "fdee56e00de44e7b",
+        "type": "template",
+        "z": "729d43fe728a5926",
+        "name": "HTML Template",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<html>\n<head><title>Text Analyzer</title></head>\n<body>\n  <h2>Text Analyzer</h2>\n  <form action=\"/analyze\" method=\"post\">\n    <textarea name=\"text\" rows=\"5\" cols=\"40\"></textarea><br><br>\n    <input type=\"submit\" value=\"Analyze\">\n  </form>\n</body>\n</html>",
+        "output": "str",
+        "x": 350,
+        "y": 220,
+        "wires": [
+            [
+                "f7b19ed7e82b66ac"
+            ]
+        ]
+    },
+    {
+        "id": "0cf88eb15bd5f3bd",
+        "type": "function",
+        "z": "729d43fe728a5926",
+        "name": "Text Analyzer",
+        "func": "var text = msg.payload.text;\n// Word count\nvar words = text.split(\" \");\nvar wordCount = words.length;\n// Character count\nvar charCount = text.length;\n// Most common word\nvar wordFrequency = {};\nwords.forEach(function(word) {\n    if (wordFrequency[word]) {\n        wordFrequency[word]++;\n    } else {\n        wordFrequency[word] = 1;\n    }\n});\nvar mostCommonWord = Object.keys(wordFrequency).reduce(function(a, b) {\n    return wordFrequency[a] > wordFrequency[b] ? a : b;\n});\nmsg.payload = {\n    wordCount: wordCount,\n    charCount: charCount,\n    mostCommonWord: mostCommonWord\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 120,
+        "wires": [
+            [
+                "bfcf59d1451579d1"
+            ]
+        ]
+    },
+    {
+        "id": "bfcf59d1451579d1",
+        "type": "template",
+        "z": "729d43fe728a5926",
+        "name": "Result Template",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<html>\n<head><title>Text Analysis Results</title></head>\n<body>\n  <h2>Text Analysis Results</h2>\n  <p>Word Count: {{payload.wordCount}}</p>\n  <p>Character Count: {{payload.charCount}}</p>\n  <p>Most Common Word: {{payload.mostCommonWord}}</p>\n</body>\n</html>",
+        "output": "str",
+        "x": 590,
+        "y": 120,
+        "wires": [
+            [
+                "f7b19ed7e82b66ac"
+            ]
+        ]
+    },
+    {
+        "id": "f7b19ed7e82b66ac",
+        "type": "http response",
+        "z": "729d43fe728a5926",
+        "name": "Output",
+        "statusCode": "",
+        "headers": {},
+        "x": 750,
+        "y": 170,
+        "wires": []
+    }
+]

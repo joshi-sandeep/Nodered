@@ -1,0 +1,90 @@
+[
+    {
+        "id": "e669338846e531d1",
+        "type": "ui_button",
+        "z": "21a4f4f048018fe7",
+        "name": "Get Random Quote",
+        "group": "1735b7718277e88f",
+        "order": 1,
+        "width": "0",
+        "height": "0",
+        "passthru": false,
+        "label": "Get Random Quote",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "",
+        "topicType": "str",
+        "x": 170,
+        "y": 180,
+        "wires": [
+            [
+                "3d038151701688d8"
+            ]
+        ]
+    },
+    {
+        "id": "3d038151701688d8",
+        "type": "function",
+        "z": "21a4f4f048018fe7",
+        "name": "Get Random Quote",
+        "func": "// Predefined list of quotes\nvar quotes = [\n    \"The only way to do great work is to love what you do. - Steve Jobs\",\n    \"Success is not the key to happiness. Happiness is the key to success. - Albert Schweitzer\",\n    \"Believe you can and you're halfway there. - Theodore Roosevelt\",\n    \"The best way to predict the future is to create it. - Peter Drucker\",\n    \"Don't watch the clock; do what it does. Keep going. - Sam Levenson\"\n];\n\n// Get a random quote\nvar randomIndex = Math.floor(Math.random() * quotes.length);\nvar randomQuote = quotes[randomIndex];\n\n// Set the output message\nmsg.payload = randomQuote;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 180,
+        "wires": [
+            [
+                "1429f529889c0f33"
+            ]
+        ]
+    },
+    {
+        "id": "1429f529889c0f33",
+        "type": "ui_template",
+        "z": "21a4f4f048018fe7",
+        "group": "1735b7718277e88f",
+        "name": "UI Template",
+        "order": 0,
+        "width": "11",
+        "height": "9",
+        "format": "<md-card>\n  <md-card-title>\n    <md-icon class=\"material-icons\">format_quote</md-icon>\n    <span class=\"md-title\">Random Quote</span>\n  </md-card-title>\n  <md-card-content>\n    <h2>{{msg.payload}}</h2>\n  </md-card-content>\n</md-card>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 590,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1735b7718277e88f",
+        "type": "ui_group",
+        "name": "randome quotes",
+        "tab": "b0378be9f220a1c2",
+        "order": 1,
+        "disp": true,
+        "width": "11",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "b0378be9f220a1c2",
+        "type": "ui_tab",
+        "name": "Tab 1",
+        "icon": "randomquotes",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    }
+]

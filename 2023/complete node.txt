@@ -1,0 +1,105 @@
+[
+    {
+        "id": "9ccf1cf0.149d58",
+        "type": "group",
+        "z": "119c3725ab590fdb",
+        "name": "Complete",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "a48dd26c.edcd8",
+            "1bca1a2e.2c5db6",
+            "4f80bd9f.d0f6a4",
+            "e5fb935c.4cd51"
+        ],
+        "x": 114,
+        "y": 179,
+        "w": 412,
+        "h": 122
+    },
+    {
+        "id": "a48dd26c.edcd8",
+        "type": "inject",
+        "z": "119c3725ab590fdb",
+        "g": "9ccf1cf0.149d58",
+        "name": "Inject Integer",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "Integer",
+        "payload": "5",
+        "payloadType": "num",
+        "x": 230,
+        "y": 220,
+        "wires": [
+            [
+                "1bca1a2e.2c5db6"
+            ]
+        ]
+    },
+    {
+        "id": "1bca1a2e.2c5db6",
+        "type": "debug",
+        "z": "119c3725ab590fdb",
+        "g": "9ccf1cf0.149d58",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 430,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "4f80bd9f.d0f6a4",
+        "type": "complete",
+        "z": "119c3725ab590fdb",
+        "g": "9ccf1cf0.149d58",
+        "name": "",
+        "scope": [
+            "a48dd26c.edcd8"
+        ],
+        "uncaught": false,
+        "x": 230,
+        "y": 260,
+        "wires": [
+            [
+                "e5fb935c.4cd51"
+            ]
+        ]
+    },
+    {
+        "id": "e5fb935c.4cd51",
+        "type": "debug",
+        "z": "119c3725ab590fdb",
+        "g": "9ccf1cf0.149d58",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 430,
+        "y": 260,
+        "wires": []
+    }
+]

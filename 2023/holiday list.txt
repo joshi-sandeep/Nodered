@@ -1,0 +1,75 @@
+[
+    {
+        "id": "4ab75de8df31e11c",
+        "type": "http request",
+        "z": "13198045d984fbd7",
+        "name": "Fetch Holiday",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://holidays.abstractapi.com/v1/?api_key=850efbc22f114634b4cc8e9f52b78f85&country=US&year=2020&month=12&day=25",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 360,
+        "y": 300,
+        "wires": [
+            [
+                "92d21351d07b5b7a"
+            ]
+        ]
+    },
+    {
+        "id": "92d21351d07b5b7a",
+        "type": "function",
+        "z": "13198045d984fbd7",
+        "name": "Process Holiday",
+        "func": "const holidays = msg.payload; \nconst holiday = holidays[0];\nconst holidayName = holiday.name; \nconst holidayDate = holiday.date; \nconst htmlResponse = `<!DOCTYPE html>\n<html>\n<head>\n  <title>Click To Get Holiday Information</title>\n  <style>\n    #holidayContainer {\n      width: 200px;\n      height: 200px;\n      position: relative;\n      margin: 20px auto;\n      background-color: lightblue;\n      text-align: center;\n    }\n\n    #holidayName {\n      position: absolute;\n      top: 50%;\n      left: 50%;\n      transform: translate(-50%, -50%);\n      font-size: 24px;\n      animation: jump 1s infinite;\n    }\n\n    @keyframes jump {\n      0%, 100% {\n        transform: translate(-50%, -50%) translateY(0);\n      }\n      50% {\n        transform: translate(-50%, -50%) translateY(-20px);\n      }\n    }\n  </style>\n</head>\n<body>\n  <h1>Click To Get Holiday Information</h1>\n  <button onclick=\"showHoliday()\">Show Holiday</button>\n  <div id=\"holidayContainer\">\n    <p id=\"holidayDate\">${holidayDate}</p>\n    <p id=\"holidayName\">${holidayName}</p>\n  </div>\n\n  <script>\n    function showHoliday() {\n      document.getElementById('holidayContainer').style.display = 'block';\n    }\n  </script>\n</body>\n</html>`;\n\nmsg.headers = {};\nmsg.headers['Content-Type'] = 'text/html';\nmsg.payload = htmlResponse;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 160,
+        "wires": [
+            [
+                "cb9d35dbfde77fbe"
+            ]
+        ]
+    },
+    {
+        "id": "cb9d35dbfde77fbe",
+        "type": "http response",
+        "z": "13198045d984fbd7",
+        "name": "HTML Response",
+        "statusCode": "",
+        "headers": {
+            "Content-Type": "text/html"
+        },
+        "x": 710,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "ed9b4e24659c1f74",
+        "type": "http in",
+        "z": "13198045d984fbd7",
+        "name": "/showHoliday",
+        "url": "/showHoliday",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 200,
+        "y": 160,
+        "wires": [
+            [
+                "4ab75de8df31e11c"
+            ]
+        ]
+    }
+]
