@@ -1,0 +1,126 @@
+[
+    {
+        "id": "e4725563d7c891ce",
+        "type": "group",
+        "z": "a1b2c3d4e5f6",
+        "name": "",
+        "style": {
+            "stroke": "#ff3f3f",
+            "label": true
+        },
+        "nodes": [
+            "inject1",
+            "function1",
+            "exec1",
+            "debug1",
+            "019a5e974e839d8f"
+        ],
+        "x": 34,
+        "y": 79,
+        "w": 1002,
+        "h": 209.5
+    },
+    {
+        "id": "inject1",
+        "type": "inject",
+        "z": "a1b2c3d4e5f6",
+        "g": "e4725563d7c891ce",
+        "name": "Example Folder",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "C:\\Users\\sandy\\Downloads\\Other",
+        "payloadType": "str",
+        "x": 160,
+        "y": 240,
+        "wires": [
+            [
+                "function1"
+            ]
+        ]
+    },
+    {
+        "id": "function1",
+        "type": "function",
+        "z": "a1b2c3d4e5f6",
+        "g": "e4725563d7c891ce",
+        "name": "Build Organizer Command",
+        "func": "let folder = String(msg.payload || '').trim();\n\nif (!folder) {\n    node.error('Please provide a folder path', msg);\n    return null;\n}\n\n// Remove surrounding quotes if user entered them\nfolder = folder.replace(/^\\\"|\\\"$/g, '');\n\n// Escape single quotes for PowerShell\nlet psFolder = folder.replace(/'/g, \"''\");\n\nmsg.folder = folder;\n\nmsg.payload = `powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"& { $folder='${psFolder}'; if (!(Test-Path -LiteralPath $folder -PathType Container)) { Write-Output 'ERROR: Folder does not exist'; exit 1 }; $map=@{ 'jpg'='Images'; 'jpeg'='Images'; 'png'='Images'; 'gif'='Images'; 'webp'='Images'; 'bmp'='Images'; 'svg'='Images'; 'pdf'='PDF'; 'mp4'='Videos'; 'mkv'='Videos'; 'avi'='Videos'; 'mov'='Videos'; 'wmv'='Videos'; 'mp3'='Audio'; 'wav'='Audio'; 'aac'='Audio'; 'flac'='Audio'; 'doc'='Word'; 'docx'='Word'; 'xls'='Excel'; 'xlsx'='Excel'; 'ppt'='PowerPoint'; 'pptx'='PowerPoint'; 'txt'='Text'; 'csv'='CSV'; 'zip'='Archives'; 'rar'='Archives'; '7z'='Archives' }; Get-ChildItem -LiteralPath $folder -File | ForEach-Object { $ext=$_.Extension.TrimStart('.').ToLower(); if ($map.ContainsKey($ext)) { $dest=Join-Path $folder $map[$ext] } else { $dest=Join-Path $folder 'Other' }; if (!(Test-Path -LiteralPath $dest)) { New-Item -ItemType Directory -Path $dest -Force | Out-Null }; if ($_.DirectoryName -ne $dest) { Move-Item -LiteralPath $_.FullName -Destination $dest -Force; Write-Output ('Moved: ' + $_.Name + ' -> ' + $map[$ext]) } } ; Write-Output 'FILE ORGANIZATION COMPLETED' }\"`;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 240,
+        "wires": [
+            [
+                "exec1"
+            ]
+        ]
+    },
+    {
+        "id": "exec1",
+        "type": "exec",
+        "z": "a1b2c3d4e5f6",
+        "g": "e4725563d7c891ce",
+        "command": "",
+        "addpay": "payload",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": true,
+        "oldrc": false,
+        "name": "Run File Organizer",
+        "x": 660,
+        "y": 240,
+        "wires": [
+            [
+                "debug1"
+            ],
+            [
+                "debug1"
+            ],
+            [
+                "debug1"
+            ]
+        ]
+    },
+    {
+        "id": "debug1",
+        "type": "debug",
+        "z": "a1b2c3d4e5f6",
+        "g": "e4725563d7c891ce",
+        "name": "Organizer Result",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "019a5e974e839d8f",
+        "type": "comment",
+        "z": "a1b2c3d4e5f6",
+        "g": "e4725563d7c891ce",
+        "name": "File Organizer",
+        "info": "",
+        "x": 540,
+        "y": 120,
+        "wires": []
+    }
+]
