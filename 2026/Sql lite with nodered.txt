@@ -1,0 +1,298 @@
+[
+    {
+        "id": "create-table-inject",
+        "type": "inject",
+        "z": "factory-sqlite-tab",
+        "name": "1. Create Database Table",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "CREATE TABLE IF NOT EXISTS machine_readings (id INTEGER PRIMARY KEY AUTOINCREMENT, machine TEXT, temperature REAL, motor_load REAL, vibration REAL, production INTEGER, status TEXT, timestamp TEXT)",
+        "x": 160,
+        "y": 40,
+        "wires": [
+            [
+                "create-table-sqlite"
+            ]
+        ]
+    },
+    {
+        "id": "create-table-sqlite",
+        "type": "sqlite",
+        "z": "factory-sqlite-tab",
+        "mydb": "factory-db",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "Create Table",
+        "x": 410,
+        "y": 40,
+        "wires": [
+            [
+                "create-debug"
+            ]
+        ]
+    },
+    {
+        "id": "create-debug",
+        "type": "debug",
+        "z": "factory-sqlite-tab",
+        "name": "Database Created",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 650,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "sensor-inject",
+        "type": "inject",
+        "z": "factory-sqlite-tab",
+        "name": "Generate Machine Reading",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "300",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "2",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "generate-machine"
+            ]
+        ]
+    },
+    {
+        "id": "generate-machine",
+        "type": "function",
+        "z": "factory-sqlite-tab",
+        "name": "Generate Sensor Data",
+        "func": "const machines = [\n    \"CNC Machine 01\",\n    \"CNC Machine 02\",\n    \"Assembly Robot 01\",\n    \"Packaging Machine\"\n];\n\nconst machine = machines[Math.floor(Math.random() * machines.length)];\n\nconst temperature = Number((55 + Math.random() * 45).toFixed(1));\nconst motorLoad = Number((40 + Math.random() * 60).toFixed(1));\nconst vibration = Number((1 + Math.random() * 9).toFixed(1));\nconst production = Math.floor(100 + Math.random() * 400);\n\nlet status = \"Running\";\n\nif (temperature > 90 || motorLoad > 95 || vibration > 8) {\n    status = \"Critical\";\n} else if (temperature > 75 || motorLoad > 80 || vibration > 5) {\n    status = \"Warning\";\n}\n\nmsg.params = {\n    $machine: machine,\n    $temperature: temperature,\n    $motor_load: motorLoad,\n    $vibration: vibration,\n    $production: production,\n    $status: status,\n    $timestamp: new Date().toLocaleString()\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 100,
+        "wires": [
+            [
+                "insert-sqlite"
+            ]
+        ]
+    },
+    {
+        "id": "insert-sqlite",
+        "type": "sqlite",
+        "z": "factory-sqlite-tab",
+        "mydb": "factory-db",
+        "sqlquery": "prepared",
+        "sql": "INSERT INTO machine_readings (machine, temperature, motor_load, vibration, production, status, timestamp) VALUES ($machine, $temperature, $motor_load, $vibration, $production, $status, $timestamp)",
+        "name": "Save Reading",
+        "x": 640,
+        "y": 100,
+        "wires": [
+            [
+                "prepare-select"
+            ]
+        ]
+    },
+    {
+        "id": "prepare-select",
+        "type": "function",
+        "z": "factory-sqlite-tab",
+        "name": "Get Latest Readings",
+        "func": "msg.topic = `SELECT * FROM machine_readings ORDER BY id DESC LIMIT 20`;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 220,
+        "wires": [
+            [
+                "select-sqlite"
+            ]
+        ]
+    },
+    {
+        "id": "select-sqlite",
+        "type": "sqlite",
+        "z": "factory-sqlite-tab",
+        "mydb": "factory-db",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "Read History",
+        "x": 650,
+        "y": 300,
+        "wires": [
+            [
+                "dashboard"
+            ]
+        ]
+    },
+    {
+        "id": "dashboard",
+        "type": "ui-template",
+        "z": "factory-sqlite-tab",
+        "group": "factory-group",
+        "page": "",
+        "ui": "",
+        "name": "Factory History Dashboard",
+        "order": 1,
+        "width": 12,
+        "height": 10,
+        "head": "",
+        "format": "<template>\n    <div class=\"dashboard\" v-if=\"msg.payload\">\n        <h1>🏭 Factory Machine Monitor</h1>\n        <p class=\"subtitle\">Live machine readings stored in SQLite</p>\n\n        <div class=\"summary\">\n            <div class=\"card\">\n                <span>Total Readings</span>\n                <strong>{{ msg.payload.length }}</strong>\n            </div>\n\n            <div class=\"card\">\n                <span>Running</span>\n                <strong>{{ msg.payload.filter(x => x.status === 'Running').length }}</strong>\n            </div>\n\n            <div class=\"card warning\">\n                <span>Warning</span>\n                <strong>{{ msg.payload.filter(x => x.status === 'Warning').length }}</strong>\n            </div>\n\n            <div class=\"card critical\">\n                <span>Critical</span>\n                <strong>{{ msg.payload.filter(x => x.status === 'Critical').length }}</strong>\n            </div>\n        </div>\n\n        <div class=\"table-container\">\n            <table>\n                <thead>\n                    <tr>\n                        <th>Machine</th>\n                        <th>Temperature</th>\n                        <th>Motor Load</th>\n                        <th>Vibration</th>\n                        <th>Production</th>\n                        <th>Status</th>\n                        <th>Time</th>\n                    </tr>\n                </thead>\n                <tbody>\n                    <tr v-for=\"row in msg.payload\" :key=\"row.id\">\n                        <td><strong>{{ row.machine }}</strong></td>\n                        <td>{{ row.temperature }} °C</td>\n                        <td>{{ row.motor_load }} %</td>\n                        <td>{{ row.vibration }} mm/s</td>\n                        <td>{{ row.production }}</td>\n                        <td>\n                            <span class=\"status\" :class=\"row.status.toLowerCase()\">\n                                {{ row.status }}\n                            </span>\n                        </td>\n                        <td>{{ row.timestamp }}</td>\n                    </tr>\n                </tbody>\n            </table>\n        </div>\n    </div>\n</template>\n\n<style>\n.dashboard {\n    padding: 20px;\n    font-family: Arial, sans-serif;\n}\n\nh1 {\n    margin-bottom: 4px;\n}\n\n.subtitle {\n    opacity: 0.6;\n    margin-top: 0;\n    margin-bottom: 20px;\n}\n\n.summary {\n    display: grid;\n    grid-template-columns: repeat(4, 1fr);\n    gap: 12px;\n    margin-bottom: 20px;\n}\n\n.card {\n    padding: 18px;\n    border-radius: 12px;\n    background: rgba(255,255,255,0.07);\n}\n\n.card span {\n    display: block;\n    font-size: 13px;\n    opacity: 0.6;\n}\n\n.card strong {\n    display: block;\n    font-size: 28px;\n    margin-top: 5px;\n}\n\n.warning strong {\n    color: #f5c542;\n}\n\n.critical strong {\n    color: #f44336;\n}\n\n.table-container {\n    overflow-x: auto;\n    border-radius: 12px;\n    background: rgba(255,255,255,0.04);\n}\n\ntable {\n    width: 100%;\n    border-collapse: collapse;\n}\n\nth, td {\n    padding: 13px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255,255,255,0.08);\n    white-space: nowrap;\n}\n\nth {\n    font-size: 12px;\n    opacity: 0.6;\n}\n\n.status {\n    padding: 5px 10px;\n    border-radius: 15px;\n    font-size: 11px;\n    font-weight: bold;\n}\n\n.running {\n    background: rgba(33,197,106,0.15);\n    color: #21c76a;\n}\n\n.warning {\n    background: rgba(245,197,66,0.15);\n    color: #f5c542;\n}\n\n.critical {\n    background: rgba(244,67,54,0.15);\n    color: #f44336;\n}\n\n@media(max-width:800px) {\n    .summary {\n        grid-template-columns: repeat(2, 1fr);\n    }\n}\n</style>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 700,
+        "y": 360,
+        "wires": [
+            [
+                "debug-history"
+            ]
+        ]
+    },
+    {
+        "id": "debug-history",
+        "type": "debug",
+        "z": "factory-sqlite-tab",
+        "name": "SQLite History",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 720,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "factory-db",
+        "type": "sqlitedb",
+        "db": "C:/node-red-data/factory_monitor.db",
+        "mode": "RWC"
+    },
+    {
+        "id": "factory-group",
+        "type": "ui-group",
+        "name": "Machine History",
+        "page": "ui-page-fixed",
+        "width": "12",
+        "height": "1",
+        "order": 1,
+        "showTitle": false,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "ui-page-fixed",
+        "type": "ui-page",
+        "name": "Factory Monitor",
+        "ui": "447ceaa35aeb1d96",
+        "path": "factory-monitor",
+        "icon": "dashboard",
+        "layout": "grid",
+        "theme": "ui-theme-fixed",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": 0,
+                "cols": 3
+            },
+            {
+                "name": "Tablet",
+                "px": 576,
+                "cols": 6
+            },
+            {
+                "name": "Small Desktop",
+                "px": 768,
+                "cols": 9
+            },
+            {
+                "name": "Desktop",
+                "px": 1024,
+                "cols": 12
+            }
+        ],
+        "order": 2,
+        "className": "",
+        "visible": true,
+        "disabled": false
+    },
+    {
+        "id": "447ceaa35aeb1d96",
+        "type": "ui-base",
+        "name": "sun",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": true
+    },
+    {
+        "id": "ui-theme-fixed",
+        "type": "ui-theme",
+        "name": "Factory Theme",
+        "colors": {
+            "surface": "#1f1f1f",
+            "primary": "#0094CE",
+            "bgPage": "#111111",
+            "groupBg": "#181818",
+            "groupOutline": "#333333"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "8px",
+            "groupOutline": "1px",
+            "widgetGap": "12px"
+        }
+    },
+    {
+        "id": "25dbd0042b267164",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-sqlite": "2.0.1",
+            "@flowfuse/node-red-dashboard": "1.30.2"
+        }
+    }
+]
