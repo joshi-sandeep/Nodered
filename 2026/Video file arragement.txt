@@ -1,0 +1,150 @@
+[
+    {
+        "id": "video-inject",
+        "type": "inject",
+        "z": "video-organizer-tab",
+        "name": "Organize Videos",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "C:\\Sandeep\\sjcam",
+        "payloadType": "str",
+        "x": 120,
+        "y": 140,
+        "wires": [
+            [
+                "video-function"
+            ]
+        ]
+    },
+    {
+        "id": "video-function",
+        "type": "function",
+        "z": "video-organizer-tab",
+        "name": "Build Video Organizer Command",
+        "func": "let folder = String(msg.payload || '').trim();\n\nif (!folder) {\n    node.error('Please provide a video folder path', msg);\n    return null;\n}\n\n// Remove surrounding quotes if provided\nfolder = folder.replace(/^\\\"|\\\"$/g, '');\n\n// Escape single quotes for PowerShell\nconst psFolder = folder.replace(/'/g, \"''\");\n\nmsg.folder = folder;\n\nmsg.payload = `powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"& { $folder='${psFolder}'; if (!(Test-Path -LiteralPath $folder -PathType Container)) { Write-Output '{\\\"error\\\":\\\"Folder does not exist\\\"}'; exit 1 }; $extensions=@('.mp4','.mkv','.avi','.mov','.wmv','.flv','.webm','.m4v','.3gp'); $videos=Get-ChildItem -LiteralPath $folder -File | Where-Object { $extensions -contains $_.Extension.ToLower() }; $moved=0; $stats=@{}; foreach($video in $videos) { $date=$video.LastWriteTime; $year=$date.Year.ToString(); $month=$date.ToString('MMMM'); $destination=Join-Path $folder $year; $destination=Join-Path $destination $month; if(!(Test-Path -LiteralPath $destination)) { New-Item -ItemType Directory -Path $destination -Force | Out-Null }; Move-Item -LiteralPath $video.FullName -Destination $destination -Force; $moved++; $key=$year+' / '+$month; if($stats.ContainsKey($key)) { $stats[$key]++ } else { $stats[$key]=1 } }; $result=[PSCustomObject]@{ folder=$folder; totalVideosFound=$videos.Count; videosMoved=$moved; statistics=$stats; status='VIDEO ORGANIZATION COMPLETED' }; $result | ConvertTo-Json -Compress }\"`;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 240,
+        "wires": [
+            [
+                "video-exec"
+            ]
+        ]
+    },
+    {
+        "id": "video-exec",
+        "type": "exec",
+        "z": "video-organizer-tab",
+        "command": "",
+        "addpay": "payload",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": true,
+        "oldrc": false,
+        "name": "Run PowerShell Organizer",
+        "x": 300,
+        "y": 340,
+        "wires": [
+            [
+                "video-result"
+            ],
+            [
+                "video-error"
+            ],
+            [
+                "video-code"
+            ]
+        ]
+    },
+    {
+        "id": "video-result",
+        "type": "function",
+        "z": "video-organizer-tab",
+        "name": "Create Statistics",
+        "func": "let output = String(msg.payload || '').trim();\n\nif (!output) {\n    msg.payload = {\n        status: 'No output received from PowerShell'\n    };\n    return msg;\n}\n\ntry {\n    const result = JSON.parse(output);\n\n    msg.payload = result;\n    msg.videoStats = result.statistics || {};\n    msg.totalVideos = result.totalVideosFound || 0;\n    msg.videosMoved = result.videosMoved || 0;\n\n    return msg;\n} catch (error) {\n    msg.payload = {\n        status: 'Unable to parse PowerShell result',\n        rawOutput: output,\n        error: error.message\n    };\n    return msg;\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 260,
+        "wires": [
+            [
+                "video-debug"
+            ]
+        ]
+    },
+    {
+        "id": "video-error",
+        "type": "function",
+        "z": "video-organizer-tab",
+        "name": "PowerShell Error",
+        "func": "msg.payload = {\n    status: 'ERROR',\n    error: msg.payload\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 340,
+        "wires": [
+            [
+                "video-debug"
+            ]
+        ]
+    },
+    {
+        "id": "video-code",
+        "type": "function",
+        "z": "video-organizer-tab",
+        "name": "Return Code",
+        "func": "msg.payload = {\n    status: 'PowerShell finished',\n    returnCode: msg.payload\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 400,
+        "wires": [
+            [
+                "video-debug"
+            ]
+        ]
+    },
+    {
+        "id": "video-debug",
+        "type": "debug",
+        "z": "video-organizer-tab",
+        "name": "Video Organizer Statistics",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 810,
+        "y": 340,
+        "wires": []
+    }
+]
